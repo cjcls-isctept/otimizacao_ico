@@ -1,0 +1,85 @@
+package ui;
+
+
+
+public class Main {
+
+	public static void InitUI() {
+		Display display = new Display();
+		Shell shell = new Shell(display);
+
+		Button button1 = new Button(shell, SWT.PUSH);
+		button1.setText("Start");
+		button1.setBounds(75, 40, 80, 30);
+		button1.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				// display.dispose();
+				/*MessageBox messageDialog = new MessageBox(shell, SWT.Act | SWT.ABORT | SWT.RETRY | SWT.IGNORE);
+
+				messageDialog.setText("Escolha uma opção");
+				messageDialog.setMessage("Preferia isto ou isto");
+				int returnCode = messageDialog.open();
+				System.out.println(returnCode);*/
+				
+		        /*
+		        for (int i = 0; i < 3; i++) {
+		        	//CustomDialog dialog = new CustomDialog(new Shell());
+		        	
+			        dialog.setText("Title");
+			        dialog.setMessage("Qual das opções prefere?");
+			        dialog.setOption1("Opcao 1");
+			        dialog.setOption2("Opcao 2");
+
+			        dialog.open();
+				}
+*/
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		// open dialog and await user selection
+
+		Button button2 = new Button(shell, SWT.PUSH);
+		button2.setText("Close");
+		button2.setSize(80, 30);
+		button2.setLocation(75, 75);
+		button2.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				display.dispose();
+				
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		shell.setText("UI Teste");
+		shell.setSize(300, 300);
+		shell.open();
+
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch())
+				display.sleep();
+		}
+
+	}
+
+	
+
+	public static void main(String[] args) {
+		InitUI();
+	}
+
+}
