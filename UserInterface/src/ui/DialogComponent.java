@@ -1,8 +1,12 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTable;
 
 public class DialogComponent extends JFrame {
 	JSlider qualPreferes;
@@ -33,6 +38,7 @@ public class DialogComponent extends JFrame {
 	JPanel panelLabels;
 	JDialog d;
 
+	static final int CONTROLS_Q = 20;
 	static final int MIN_VALUE = -8;
 	static final int MAX_VALUE = 8;
 	static final int INIT_VALUE = 0;
@@ -50,6 +56,7 @@ public class DialogComponent extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		this.setSize(1340, 400);
 
 	}
 
@@ -83,9 +90,9 @@ public class DialogComponent extends JFrame {
 
 				}
 
-				//main_matrix.printMatrix();
-				//System.out.println("__________________________________________________________");
-				//subC_matrix.printMatrix();
+				// main_matrix.printMatrix();
+				// System.out.println("__________________________________________________________");
+				// subC_matrix.printMatrix();
 
 				// set visibility of dialog
 				d.setVisible(true);
@@ -94,9 +101,24 @@ public class DialogComponent extends JFrame {
 			}
 		});
 
-		topPanel.add(confirmButton, BorderLayout.SOUTH);
+		
+		JLabel instructions = new JLabel("Escolha qual prefere, numa escala de 1 a 9, de entre os pares seguintes:", JLabel.CENTER);
+		JPanel instrContainer = new JPanel((new BorderLayout()));
+		Font font = instructions.getFont();
+		Font boldFont = new Font(font.getFontName(), Font.ITALIC, font.getSize()+5);
+		
+		instructions.setFont(boldFont);
+		instrContainer.setBorder(BorderFactory.createEmptyBorder(15, 15, 1, 15));
+		instrContainer.add(instructions);
+		topPanel.add(instrContainer, BorderLayout.NORTH);
+		
+		JPanel buttonContainer = new JPanel((new BorderLayout()));
+		buttonContainer.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		buttonContainer.add(confirmButton);
+		topPanel.add(buttonContainer, BorderLayout.SOUTH);
 		topPanel.add(panelLabels);
 		this.add(topPanel);
+		
 
 		this.addWindowListener(new WindowAdapter() {
 			@Override
@@ -105,6 +127,7 @@ public class DialogComponent extends JFrame {
 				e.getWindow().dispose();
 			}
 		});
+		
 	}
 
 	/**
@@ -118,7 +141,8 @@ public class DialogComponent extends JFrame {
 
 		// result dialog
 		d = new JDialog(DialogComponent.this, "dialog Box");
-		createDialog(d);
+		d.setSize(600, 200);
+		createDialog(d, result);
 
 	}
 
@@ -130,25 +154,49 @@ public class DialogComponent extends JFrame {
 	private void createComponents() {
 
 		topPanel = new JPanel(new BorderLayout());
+		
 		panelLabels = new JPanel();
+	
 		List<String> criteria_combination = combinations("criteria");
 		List<String> sub_criteria_combination = combinations("sub");
 		addSlider(panelLabels, criteria_combination, "criteria");
 		addSlider(panelLabels, sub_criteria_combination, "sub");
 		confirmButton = new JButton("OK");
-
+		
 	}
 
 	/**
 	 * Generates the dialog windows components
 	 * 
-	 * @param d JDialog window
+	 * @param d      JDialog window
+	 * @param result
 	 * 
 	 */
-	private void createDialog(JDialog d) {
+	private void createDialog(JDialog dialog, String result) {
+		
+		dialog.setLayout(new BorderLayout(10, 10));
+		JPanel containerPanel = new JPanel((new BorderLayout()));
+		dialog.add(containerPanel);
+		containerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 5, 15));
+		String resutl_aux = "11000110101110000000";
+		String[] result_data = resutl_aux.split("");
 
-		d.setLayout(new BorderLayout());
+		JPanel tableContainer = new JPanel((new BorderLayout()));
+		tableContainer.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		JTable table = new JTable(2, CONTROLS_Q);
+		tableContainer.add(table);
+		for (int i = 0; i < CONTROLS_Q; i++) {
+			table.setValueAt("C" + (i + 1), 0, i);
 
+			if (result_data[i].equals("1")) {
+				table.setValueAt("X", 1, i);
+			}
+
+		}
+		containerPanel.add(tableContainer, BorderLayout.CENTER);
+
+		JPanel buttonContainer = new JPanel((new BorderLayout()));
+		buttonContainer.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		JButton close = new JButton("OK");
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -159,16 +207,21 @@ public class DialogComponent extends JFrame {
 				dispose();
 			}
 		});
-
-		d.add(close, BorderLayout.SOUTH);
+		buttonContainer.add(close);
+		containerPanel.add(buttonContainer, BorderLayout.SOUTH);
 
 		// create a label
-		JLabel label = new JLabel("this is a dialog box");
+		JPanel labelContainer = new JPanel((new BorderLayout()));
+		labelContainer.setBorder(BorderFactory.createEmptyBorder(0,0 , 0, 0));
+		JLabel label = new JLabel("Esta é a configuração ótima dos controladores tendo em conta as prefereências selecionadas:",JLabel.CENTER);
+		Font font = label.getFont();
+		Font boldFont = new Font(font.getFontName(), Font.ITALIC , font.getSize());
+		label.setFont(boldFont);
+		labelContainer.add(label);
 
-		d.add(label, BorderLayout.CENTER);
+		containerPanel.add(labelContainer, BorderLayout.NORTH);
 
 		// setsize of dialog
-		d.setSize(600, 400);
 
 	}
 
